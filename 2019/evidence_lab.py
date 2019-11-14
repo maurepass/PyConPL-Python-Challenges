@@ -1,30 +1,24 @@
 def organise_mess(input_data, nesting_levels) -> dict:
+
     def create_dict(tmp_dict, tmp_list):
         if len(tmp_list) > 1:
             return {tmp_dict.pop(tmp_list[0]): create_dict(tmp_dict, tmp_list[1:])}
-        else:
-            return {tmp_dict.pop(tmp_list[0]): [tmp_dict]}
+        return {tmp_dict.pop(tmp_list[0]): [tmp_dict]}
+
     final_dict = dict()
     for item in input_data:
-        new_dict = create_dict(item, nesting_levels)
-        key = list(new_dict.keys())[0]
-        if key not in final_dict.keys():
-            final_dict.update(new_dict)
-        else:
-            t_dict = final_dict.get(key)
-            n_dict = new_dict.get(key)
-            for i in range(1, len(nesting_levels)):
-                key = list(n_dict.keys())[0]
-                if key not in t_dict.keys():
-                    t_dict.update(n_dict)
-                else:
-                    t_dict = t_dict.get(key)
-                    n_dict = n_dict.get(key)
+        n_dict = create_dict(item, nesting_levels)
+        t_dict = final_dict
+        while True:
+            key = list(n_dict.keys())[0]
+            if key not in t_dict.keys():
+                t_dict.update(n_dict)
+                break
+            t_dict = t_dict.get(key)
+            n_dict = n_dict.get(key)
             if isinstance(t_dict, list):
-                if isinstance(n_dict, dict):
-                    t_dict.append(n_dict.get(key)[0])
-                else:
-                    t_dict.append(n_dict[0])
+                t_dict.append(n_dict[0])
+                break
     return final_dict
 
 
